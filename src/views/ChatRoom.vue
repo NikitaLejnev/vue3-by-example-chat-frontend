@@ -43,5 +43,56 @@ export default {
       message: "",
     };
   },
-}
+  methods: {
+    async getChatMessages() {
+      const { id } = this.$route.params;
+      const { data } = await axios.get(`${APIURL}/api/message/${id}`);
+      this.chatMessages = data;
+      this.$nextTick(() => {
+        const container = this.$refs.container;
+        container.scrollTop = container.scrollHeight;
+      });
+    },
+    async sendChatMessage() {
+      const { message } = this;
+      if (!message) {
+        return;
+      }
+      const { id: chat_id } = this.$route.params;
+      const {
+        data: { id: user_id },
+      } = await axios.post(`${APIURL}/api/auth/me`);
+      await axios.post(`${APIURL}/api/message/create`, {
+        message,
+        chat_id,
+        user_id,
+      });
+      this.message = "";
+    },
+    addChatListener() {
+      window.Echo.channel("laravel_database_chat").listen(
+        ".MessageSent",
+        () => {
+          this.getChatMessages();
+        }
+      );
+    },
+  },
+};
 </script>
+
+<style scoped>
+#chat-messages {
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.row div:first-child {
+  width: 30%;
+}
+</style>
