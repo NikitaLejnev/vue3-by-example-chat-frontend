@@ -2,7 +2,7 @@
   <div>
     <h1>
       {{
-        edit ? "Edit" : "Add
+        edit ? "Edit" : "Add"
       }} Chatroom
     </h1>
     <form @submit.prevent="submit">
@@ -17,3 +17,18 @@
     </form>
   </div>
 </template>
+
+<script>
+import axios from "axios";
+import { APIURL } from "../constants";
+export default {
+  name: "ChatroomForm",
+
+  async created() {
+    if (this.edit) {
+      const { data } = await axios.get(`${APIURL}/api/chat/${this.id}`);
+      this.form = data;
+    }
+  },
+};
+</script>
