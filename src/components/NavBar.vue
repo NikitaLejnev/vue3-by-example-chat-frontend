@@ -26,3 +26,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+ul {
+  list-style-type: none;
+}
+
+ul li {
+  display: inline;
+  margin-right: 10px;
+}
+</style>
